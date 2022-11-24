@@ -12,15 +12,28 @@ export default class TicketService {
   }
 
   #validateTicketTypeRequests(ticketTypeRequests) {
-    for (let i = 0; i < ticketTypeRequests.length; i++) {
-      if (!(ticketTypeRequests[i] instanceof TicketTypeRequest)) {
-        throw new InvalidPurchaseException(
-          "Invalid Ticket Type Request",
-          "Ticket Type Request Error"
-        );
-      }
+    console.log(`ticket requests length is: ${ticketTypeRequests.length}`);
+    if (ticketTypeRequests.length > 20) {
+      throw new InvalidPurchaseException(
+        "You have requested too many tickets",
+        "Ticket Type Request Error"
+      );
     }
-    return "Everything is ok";
+    if (ticketTypeRequests.length > 0) {
+      for (let i = 0; i < ticketTypeRequests.length; i++) {
+        if (!(ticketTypeRequests[i] instanceof TicketTypeRequest)) {
+          throw new InvalidPurchaseException(
+            "Invalid Ticket Type Request",
+            "Ticket Type Request Error"
+          );
+        }
+      }
+    } else {
+      throw new InvalidPurchaseException(
+        "No Ticket Requests",
+        "Ticket Type Request Error"
+      );
+    }
   }
 
   /**
@@ -30,6 +43,6 @@ export default class TicketService {
   purchaseTickets(accountId, ...ticketTypeRequests) {
     // if accountId is 0 or less throws InvalidPurchaseException
     this.#validateAccountId(accountId);
-    return this.#validateTicketTypeRequests(ticketTypeRequests);
+    this.#validateTicketTypeRequests(ticketTypeRequests);
   }
 }
