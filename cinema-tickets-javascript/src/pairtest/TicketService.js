@@ -11,6 +11,18 @@ export default class TicketService {
     }
   }
 
+  #validateTicketTypeRequests(ticketTypeRequests) {
+    for (let i = 0; i < ticketTypeRequests.length; i++) {
+      if (!(ticketTypeRequests[i] instanceof TicketTypeRequest)) {
+        throw new InvalidPurchaseException(
+          "Invalid Ticket Type Request",
+          "Ticket Type Request Error"
+        );
+      }
+    }
+    return "Everything is ok";
+  }
+
   /**
    * Should only have private methods other than the one below.
    */
@@ -18,5 +30,6 @@ export default class TicketService {
   purchaseTickets(accountId, ...ticketTypeRequests) {
     // if accountId is 0 or less throws InvalidPurchaseException
     this.#validateAccountId(accountId);
+    return this.#validateTicketTypeRequests(ticketTypeRequests);
   }
 }

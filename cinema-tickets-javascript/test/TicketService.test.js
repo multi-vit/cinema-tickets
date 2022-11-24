@@ -29,3 +29,18 @@ test("Given an account ID below 1, when called, TicketService throws an error", 
     tickets.purchaseTickets(0);
   }).toThrow(Error);
 });
+
+test("Given an invalid ticketTypeRequest, when called, TicketService throws an error", async () => {
+  const tickets = new TicketService();
+  expect(() => {
+    tickets.purchaseTickets(1, { type: "ADULT", NoOfTickets: 1 });
+  }).toThrow(Error);
+});
+
+test("Given a valid ticketTypeRequest, when called, TicketService throws an error", async () => {
+  const adultTicket = new TicketTypeRequest("ADULT", 1);
+  const tickets = new TicketService();
+  expect(() => {
+    tickets.purchaseTickets(1, adultTicket);
+  }).toThrow(Error);
+});
