@@ -2,29 +2,6 @@ import { test, expect, describe } from "@jest/globals";
 import TicketTypeRequest from "../src/pairtest/lib/TicketTypeRequest.js";
 import TicketService from "../src/pairtest/TicketService.js";
 
-describe("Check TicketTypeRequest", () => {
-  test("Given a type and number of tickets, when called, TicketTypeRequest creates an instance of a Ticket", async () => {
-    const adultTicket = new TicketTypeRequest("ADULT", 1);
-    /*   console.log(adultTicket);
-      console.log(adultTicket.getNoOfTickets());
-      console.log(adultTicket.getTicketType()); */
-    expect(adultTicket.getNoOfTickets()).toBe(1);
-    expect(adultTicket.getTicketType()).toBe("ADULT");
-  });
-
-  test("Given an invalid type of ticket, when called, TicketTypeRequest throws an error", async () => {
-    expect(() => {
-      new TicketTypeRequest("SENIOR", 1);
-    }).toThrow(Error);
-  });
-
-  test("Given an argument for noOfTickets that is not a number, when called, TicketTypeRequest throws an error", async () => {
-    expect(() => {
-      new TicketTypeRequest("ADULT", "1");
-    }).toThrow(Error);
-  });
-});
-
 describe("Account ID Validation in TicketService", () => {
   test("Given an account ID below 1, when called, TicketService throws an error", async () => {
     const tickets = new TicketService();
@@ -37,7 +14,7 @@ describe("Check ticketTypeRequest in TicketService", () => {
   test("Given an invalid ticketTypeRequest, when called, TicketService throws an error", async () => {
     const tickets = new TicketService();
     expect(() => {
-      tickets.purchaseTickets(1, { type: "ADULT", NoOfTickets: 1 });
+      tickets.purchaseTickets(1, { type: "ADULT", noOfTickets: 1 });
     }).toThrow(new Error("Invalid Ticket Type Request"));
   });
 });
@@ -73,4 +50,82 @@ describe("Check request includes an adult ticket in TicketService", () => {
   });
 });
 
-// Test Valid ticket purchases?
+describe("Check call to TicketPaymentService", () => {
+  test("Given an account ID that is a string, when called, TicketPaymentService throws an error", async () => {
+    const adultTicket = new TicketTypeRequest("ADULT", 1);
+    const tickets = new TicketService();
+    expect(() => {
+      tickets.purchaseTickets("1", adultTicket);
+    }).toThrowError("accountId must be an integer");
+  });
+  test("Given a valid account ID and ticketTypeRequest of 1 Adult, when called, TicketPaymentService returns correct total", async () => {
+    const adultTicket = new TicketTypeRequest("ADULT", 1);
+    const tickets = new TicketService();
+    const response = tickets.purchaseTickets(1, adultTicket);
+    expect(response.payment).toBe(20);
+  });
+  test("Given a valid account ID and ticketTypeRequest of 1 Adult and 1 Child, when called, TicketPaymentService returns correct total", async () => {
+    const adultTicket = new TicketTypeRequest("ADULT", 1);
+    const childTicket = new TicketTypeRequest("CHILD", 1);
+    const tickets = new TicketService();
+    const response = tickets.purchaseTickets(1, adultTicket, childTicket);
+    expect(response.payment).toBe(30);
+  });
+  test("Given a valid account ID and ticketTypeRequest of 2 Adults and 1 Infant, when called, TicketPaymentService returns correct total", async () => {
+    const adultTicket = new TicketTypeRequest("ADULT", 2);
+    const infantTicket = new TicketTypeRequest("INFANT", 1);
+    const tickets = new TicketService();
+    const response = tickets.purchaseTickets(1, adultTicket, infantTicket);
+    expect(response.payment).toBe(40);
+  });
+  test("Given a valid account ID and ticketTypeRequest of random number of Adults and Children, when called, TicketPaymentService returns correct total", async () => {
+    let randomNumberforAdult = Math.floor(Math.random() * 10 + 1);
+    let randomNumberforChild = Math.floor(Math.random() * 10 + 1);
+    const adultTicket = new TicketTypeRequest("ADULT", randomNumberforAdult);
+    const infantTicket = new TicketTypeRequest("CHILD", randomNumberforChild);
+    const tickets = new TicketService();
+    const response = tickets.purchaseTickets(1, adultTicket, infantTicket);
+    expect(response.payment).toBe(
+      20 * randomNumberforAdult + 10 * randomNumberforChild
+    );
+  });
+});
+
+describe("Check call to SeatReservationService", () => {
+  test("Given an account ID that is a string, when called, SeatReservationService throws an error", async () => {
+    const adultTicket = new TicketTypeRequest("ADULT", 1);
+    const tickets = new TicketService();
+    expect(() => {
+      tickets.purchaseTickets("1", adultTicket);
+    }).toThrowError("accountId must be an integer");
+  });
+  test("Given a valid account ID and ticketTypeRequest of 1 Adult, when called, TicketPaymentService returns correct total", async () => {
+    const adultTicket = new TicketTypeRequest("ADULT", 1);
+    const tickets = new TicketService();
+    const response = tickets.purchaseTickets(1, adultTicket);
+    expect(response.seats).toBe(1);
+  });
+  test("Given a valid account ID and ticketTypeRequest of 2 Adult and 1 Child, when called, TicketPaymentService returns correct total", async () => {
+    const adultTicket = new TicketTypeRequest("ADULT", 2);
+    const childTicket = new TicketTypeRequest("CHILD", 1);
+    const tickets = new TicketService();
+    const response = tickets.purchaseTickets(1, adultTicket, childTicket);
+    expect(response.seats).toBe(3);
+  });
+  test("Given a valid account ID and ticketTypeRequest of 2 Adults and 1 Infant, when called, TicketPaymentService returns correct total", async () => {
+    const adultTicket = new TicketTypeRequest("ADULT", 2);
+    const infantTicket = new TicketTypeRequest("INFANT", 1);
+    const tickets = new TicketService();
+    const response = tickets.purchaseTickets(1, adultTicket, infantTicket);
+    expect(response.seats).toBe(2);
+  });
+  test("Given a valid account ID and ticketTypeRequest of random number of Adults and Children, when called, TicketPaymentService returns correct total", async () => {
+    let randomNumberforAdult = Math.floor(Math.random() * 10 + 1);
+    let randomNumberforChild = Math.floor(Math.random() * 10 + 1);
+    const adultTicket = new TicketTypeRequest("ADULT", randomNumberforAdult);
+    const infantTicket = new TicketTypeRequest("CHILD", randomNumberforChild);
+    const tickets = new TicketService();
+    const response = tickets.purchaseTickets(1, adultTicket, infantTicket);
+    expect(response.seats).toBe(randomNumberforAdult + randomNumberforChild);
+  });
+});
