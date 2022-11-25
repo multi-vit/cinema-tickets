@@ -3,6 +3,12 @@ import TicketTypeRequest from "../src/pairtest/lib/TicketTypeRequest.js";
 import TicketService from "../src/pairtest/TicketService.js";
 
 describe("Account ID Validation in TicketService", () => {
+  test("Given an account ID that is not a number, when called, TicketService throws an error", async () => {
+    const tickets = new TicketService();
+    expect(() => {
+      tickets.purchaseTickets("bob");
+    }).toThrowError("Account ID must be an integer");
+  });
   test("Given an account ID below 1, when called, TicketService throws an error", async () => {
     const tickets = new TicketService();
     expect(() => {
@@ -51,13 +57,6 @@ describe("Check request includes an adult ticket in TicketService", () => {
 });
 
 describe("Check call to TicketPaymentService", () => {
-  test("Given an account ID that is a string, when called, TicketPaymentService throws an error", async () => {
-    const adultTicket = new TicketTypeRequest("ADULT", 1);
-    const tickets = new TicketService();
-    expect(() => {
-      tickets.purchaseTickets("1", adultTicket);
-    }).toThrowError("accountId must be an integer");
-  });
   test("Given a valid account ID and ticketTypeRequest of 1 Adult, when called, TicketPaymentService returns correct total", async () => {
     const adultTicket = new TicketTypeRequest("ADULT", 1);
     const tickets = new TicketService();
@@ -92,13 +91,6 @@ describe("Check call to TicketPaymentService", () => {
 });
 
 describe("Check call to SeatReservationService", () => {
-  test("Given an account ID that is a string, when called, SeatReservationService throws an error", async () => {
-    const adultTicket = new TicketTypeRequest("ADULT", 1);
-    const tickets = new TicketService();
-    expect(() => {
-      tickets.purchaseTickets("1", adultTicket);
-    }).toThrowError("accountId must be an integer");
-  });
   test("Given a valid account ID and ticketTypeRequest of 1 Adult, when called, TicketPaymentService returns correct total", async () => {
     const adultTicket = new TicketTypeRequest("ADULT", 1);
     const tickets = new TicketService();

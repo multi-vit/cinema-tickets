@@ -10,6 +10,12 @@ const TICKETPRICES = {
 };
 export default class TicketService {
   #validateAccountId(accountId) {
+    if (!Number.isInteger(accountId)) {
+      throw new InvalidPurchaseException(
+        "Account ID must be an integer",
+        "Account ID Error"
+      );
+    }
     if (accountId < 1) {
       throw new InvalidPurchaseException(
         "Invalid Account ID",
