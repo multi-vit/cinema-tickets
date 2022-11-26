@@ -2,13 +2,13 @@ import TicketTypeRequest from "./lib/TicketTypeRequest.js";
 import InvalidPurchaseException from "./lib/InvalidPurchaseException.js";
 import TicketPaymentService from "../thirdparty/paymentgateway/TicketPaymentService.js";
 import SeatReservationService from "../thirdparty/seatbooking/SeatReservationService.js";
-
-const TICKETPRICES = {
-  ADULT: 20,
-  CHILD: 10,
-  INFANT: 0,
-};
 export default class TicketService {
+  #TICKETPRICES = {
+    ADULT: 20,
+    CHILD: 10,
+    INFANT: 0,
+  };
+
   #validateAccountId(accountId) {
     if (!Number.isInteger(accountId)) {
       throw new InvalidPurchaseException(
@@ -71,7 +71,8 @@ export default class TicketService {
       const currentTicketRequest = ticketTypeRequests[i];
       const currentTicketType = currentTicketRequest.getTicketType();
       const currentNoOfTickets = currentTicketRequest.getNoOfTickets();
-      paymentTotal += TICKETPRICES[currentTicketType] * currentNoOfTickets;
+      paymentTotal +=
+        this.#TICKETPRICES[currentTicketType] * currentNoOfTickets;
     }
     // Call TicketPaymentService with accountId and total to pay as arguments
     const paymentService = new TicketPaymentService();
