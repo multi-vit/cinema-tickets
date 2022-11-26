@@ -13,7 +13,7 @@ describe("Account ID Validation in TicketService", () => {
     const tickets = new TicketService();
     expect(() => {
       tickets.purchaseTickets(0);
-    }).toThrow(new Error("Invalid Account ID"));
+    }).toThrowError("Invalid Account ID");
   });
 });
 describe("Check ticketTypeRequest in TicketService", () => {
@@ -21,7 +21,7 @@ describe("Check ticketTypeRequest in TicketService", () => {
     const tickets = new TicketService();
     expect(() => {
       tickets.purchaseTickets(1, { type: "ADULT", noOfTickets: 1 });
-    }).toThrow(new Error("Invalid Ticket Type Request"));
+    }).toThrowError("Invalid Ticket Type Request");
   });
 });
 
@@ -35,14 +35,14 @@ describe("Check number of ticket requests in TicketService", () => {
     const tickets = new TicketService();
     expect(() => {
       tickets.purchaseTickets(1, ...ticketRequests);
-    }).toThrow(new Error("You have requested too many tickets"));
+    }).toThrowError("You have requested too many tickets");
   });
 
   test("Given no ticketTypeRequests, when called, TicketService throws an error", async () => {
     const tickets = new TicketService();
     expect(() => {
       tickets.purchaseTickets(1);
-    }).toThrow(new Error("No Ticket Requests"));
+    }).toThrowError("No Ticket Requests");
   });
 });
 
@@ -52,7 +52,7 @@ describe("Check request includes an adult ticket in TicketService", () => {
     const tickets = new TicketService();
     expect(() => {
       tickets.purchaseTickets(1, childTicket);
-    }).toThrow(new Error("Cannot purchase tickets without an adult"));
+    }).toThrowError("Cannot purchase tickets without an adult");
   });
 });
 
